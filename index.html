@@ -4,28 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>e-tography Merch Store</title>
+
+  <link rel="icon" type="image/png" href="https://photos.smugmug.com/photos/i-V5vDfdN/0/MBtVnr5wDdPZPqc94Jw7JSsDdSbQDPmftJLSmjvGD/XL/i-V5vDfdN-XL.png">
+  <link rel="apple-touch-icon" href="https://photos.smugmug.com/photos/i-V5vDfdN/0/MBtVnr5wDdPZPqc94Jw7JSsDdSbQDPmftJLSmjvGD/XL/i-V5vDfdN-XL.png">
+
   <script src="https://www.paypal.com/sdk/js?client-id=BAABT6KjkzmvknPNoGNPX0ZQtrfUMhtDAK-NAkkPa1ef_X_6soMCXMAukZ7onzvIY8Mqr5Y0zDaPqIgJss&currency=USD&enable-funding=venmo,card"></script>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      padding: 0 12px 32px;
+      padding: 0 14px 40px;
       background-color: #050505;
       color: #e5e5e5;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* Top Navigation Bar */
+    /* Branded Top Header */
     .etog-topbar {
-      max-width: 1040px;
-      margin: 16px auto 12px;
-      padding: 0 4px;
+      max-width: 1160px;
+      margin: 18px auto 14px;
+      padding: 0 4px 12px;
+      border-bottom: 1px solid #161616;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 16px;
     }
-    .etog-topbar a {
-      color: #888;
+    .etog-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .etog-logo {
+      height: 36px;
+      width: auto;
+      max-width: 190px;
+      object-fit: contain;
+      display: block;
+    }
+    .etog-brand-tag {
+      color: #b5b5b5;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      padding-left: 12px;
+      border-left: 1px solid #2a2a2a;
+    }
+    .etog-back-link {
+      color: #a8a8a8;
       text-decoration: none;
       font-size: 12px;
       font-weight: 700;
@@ -33,98 +61,122 @@
       text-transform: uppercase;
       transition: color 0.2s ease;
     }
-    .etog-topbar a:hover { color: #fff; }
-    .etog-topbar span {
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
+    .etog-back-link:hover { color: #ffffff; }
+    @media (max-width: 600px) {
+      .etog-topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .etog-logo { height: 30px; }
     }
 
     #etog-merch {
-      max-width: 1040px;
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 20px;
-      background-color: #050505;
-      border: 1px solid #1a1a1a;
-      border-radius: 6px;
+      padding: 22px;
+      background-color: #080808;
+      border: 1px solid #1b1b1b;
+      border-radius: 8px;
     }
 
     /* Tabs */
     .etog-tabs {
       display: flex;
       gap: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
     .etog-tab-btn {
       flex: 1;
       padding: 13px;
-      background-color: #0d0d0d;
-      border: 1px solid #1f1f1f;
-      color: #777;
+      background-color: #0f0f0f;
+      border: 1px solid #222;
+      color: #888;
       text-transform: uppercase;
       font-weight: 700;
       font-size: 12px;
       letter-spacing: 1.4px;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 5px;
       transition: all 0.2s ease;
     }
-    .etog-tab-btn:hover { background-color: #141414; color: #bbb; }
+    .etog-tab-btn:hover { background-color: #161616; color: #ccc; }
     .etog-tab-btn.active {
-      background-color: #181818;
+      background-color: #1c1c1c;
       color: #ffffff;
-      border-color: #444444;
+      border-color: #4a4a4a;
     }
 
-    /* Main 2-Column Layout */
+    /* Main 2-Column Layout (Wider Gallery) */
     .etog-main {
       display: flex;
       flex-wrap: wrap;
       align-items: flex-start;
-      gap: 24px;
-      margin-bottom: 22px;
+      gap: 26px;
+      margin-bottom: 24px;
     }
-    .etog-gallery-col { flex: 1.5; min-width: 300px; }
-    .etog-config-col { flex: 1.1; min-width: 270px; }
+    .etog-gallery-col { flex: 1.75; min-width: 320px; }
+    .etog-config-col { flex: 1; min-width: 280px; }
 
-    /* Side-by-Side Front/Back Viewer */
+    /* Larger Side-by-Side Front/Back Viewer */
     .etog-viewport {
-      background-color: #0a0a0a;
-      border: 1px solid #161616;
-      border-radius: 4px;
-      padding: 12px;
+      background-color: #0c0c0c;
+      border: 1px solid #1a1a1a;
+      border-radius: 6px;
+      padding: 14px;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
-    @media (max-width: 640px) {
+    @media (max-width: 680px) {
       .etog-viewport { grid-template-columns: 1fr; }
     }
     .etog-img-card {
-      background-color: #0e0e0e;
-      border: 1px solid #181818;
-      border-radius: 4px;
-      padding: 10px;
+      position: relative;
+      background-color: #111111;
+      border: 1px solid #1e1e1e;
+      border-radius: 5px;
+      padding: 12px;
       text-align: center;
+      cursor: zoom-in;
+      overflow: hidden;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .etog-img-card:hover {
+      border-color: #444;
     }
     .etog-img-card img {
       width: 100%;
-      max-height: 380px;
+      max-height: 460px;
       object-fit: contain;
       border-radius: 3px;
       display: block;
       margin: 0 auto;
+      transition: transform 0.25s ease;
+    }
+    .etog-img-card:hover img {
+      transform: scale(1.025);
+    }
+    .etog-img-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid #1b1b1b;
     }
     .etog-img-label {
-      display: block;
-      margin-top: 8px;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1.2px;
-      color: #666;
-      font-weight: 600;
+      color: #a0a0a0;
+      font-weight: 700;
+    }
+    .etog-zoom-hint {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #777;
+      transition: color 0.2s ease;
+    }
+    .etog-img-card:hover .etog-zoom-hint {
+      color: #ffffff;
     }
 
     /* Labels & Swatches */
@@ -137,23 +189,23 @@
       margin-bottom: 10px;
       display: block;
     }
-    .etog-section-label strong { color: #fff; }
+    .etog-section-label strong { color: #ffffff; }
 
     .etog-swatch-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 14px;
+      gap: 9px;
+      margin-bottom: 16px;
     }
     .etog-chip {
       width: 100%;
-      height: 48px;
+      height: 50px;
       border-radius: 5px;
-      border: 2px solid #222;
+      border: 2px solid #262626;
       cursor: pointer;
       transition: transform 0.15s ease, border-color 0.15s ease;
     }
-    .etog-chip:hover { transform: translateY(-2px); border-color: #666; }
+    .etog-chip:hover { transform: translateY(-2px); border-color: #777; }
     .etog-chip.active {
       border-color: #ffffff;
       box-shadow: 0 0 0 2px #050505 inset;
@@ -165,76 +217,73 @@
 
     /* Item Picker Box */
     .etog-picker-card {
-      background-color: #0b0b0b;
-      border: 1px solid #1e1e1e;
-      padding: 14px;
-      border-radius: 4px;
+      background-color: #0e0e0e;
+      border: 1px solid #222;
+      padding: 16px;
+      border-radius: 6px;
     }
     .etog-picker-header {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
-      color: #bbb;
-      margin-bottom: 10px;
+      color: #cccccc;
+      margin-bottom: 12px;
       letter-spacing: 0.8px;
     }
-    .etog-picker-header .price { color: #fff; }
+    .etog-picker-header .price { color: #ffffff; }
 
     .etog-row {
       display: flex;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .etog-select {
       flex: 1;
       padding: 10px;
       background-color: #050505;
-      border: 1px solid #262626;
-      color: #eee;
+      border: 1px solid #2e2e2e;
+      color: #f0f0f0;
       font-size: 13px;
-      border-radius: 3px;
+      border-radius: 4px;
     }
-    .etog-select.etog-qty { flex: 0 0 96px; }
-    .etog-select:focus { border-color: #555; outline: none; }
+    .etog-select.etog-qty { flex: 0 0 98px; }
+    .etog-select:focus { border-color: #666; outline: none; }
     .etog-select option:disabled { color: #555; background-color: #111; }
 
     .etog-add-btn {
       width: 100%;
-      padding: 12px;
-      background-color: #181818;
-      border: 1px solid #444;
-      color: #fff;
+      padding: 13px;
+      background-color: #1e1e1e;
+      border: 1px solid #4d4d4d;
+      color: #ffffff;
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.1px;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .etog-add-btn:hover { background-color: #242424; border-color: #777; }
+    .etog-add-btn:hover { background-color: #2b2b2b; border-color: #888; }
     .etog-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* Shared Cart Section */
     .etog-cart-section {
-      border-top: 1px solid #1c1c1c;
-      padding-top: 18px;
+      border-top: 1px solid #1e1e1e;
+      padding-top: 20px;
     }
     .etog-cart-empty {
-      background-color: #0b0b0b;
+      background-color: #0d0d0d;
       border: 1px dashed #333;
-      border-radius: 4px;
-      padding: 16px;
+      border-radius: 5px;
+      padding: 18px;
       text-align: center;
       font-size: 13px;
       color: #bdbdbd;
       margin-bottom: 14px;
     }
-    .etog-totals span { color: #cccccc; }
-    .etog-totals strong { color: #ffffff; }
-    
     .etog-cart-list {
       display: flex;
       flex-direction: column;
@@ -247,13 +296,14 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      background-color: #0b0b0b;
-      border: 1px solid #1e1e1e;
-      padding: 10px 14px;
-      border-radius: 4px;
+      background-color: #0e0e0e;
+      border: 1px solid #222;
+      padding: 11px 14px;
+      border-radius: 5px;
       font-size: 13px;
+      color: #e5e5e5;
     }
-    .etog-cart-item-info strong { color: #fff; }
+    .etog-cart-item-info strong { color: #ffffff; }
     .etog-cart-item-controls {
       display: flex;
       align-items: center;
@@ -263,8 +313,8 @@
       width: 68px;
       padding: 5px 8px;
       background-color: #050505;
-      border: 1px solid #262626;
-      color: #eee;
+      border: 1px solid #333;
+      color: #f0f0f0;
       border-radius: 3px;
       font-size: 13px;
     }
@@ -275,27 +325,27 @@
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      padding: 5px 8px;
+      padding: 5px 9px;
       border-radius: 3px;
       cursor: pointer;
     }
     .etog-remove-btn:hover { background-color: #261012; border-color: #7f1d1d; }
 
-    /* Totals & Checkout */
+    /* Totals & Readable White PayPal Card */
     .etog-totals {
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 10px;
-      background-color: #0e0e0e;
-      border: 1px solid #1e1e1e;
-      padding: 12px 14px;
-      border-radius: 4px;
+      background-color: #111111;
+      border: 1px solid #242424;
+      padding: 13px 16px;
+      border-radius: 5px;
       font-size: 13px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    .etog-totals span { color: #999; }
-    .etog-totals strong { color: #fff; }
+    .etog-totals span { color: #cccccc; }
+    .etog-totals strong { color: #ffffff; }
 
     #paypal-button-container {
       max-width: 440px;
@@ -329,16 +379,105 @@
       display: block;
       font-size: 16px;
       margin-bottom: 6px;
-      color: #fff;
+      color: #ffffff;
     }
+
+    /* Full-Screen Image Zoom Lightbox Modal */
+    .etog-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background-color: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .etog-lightbox.open {
+      display: flex;
+    }
+    .etog-lightbox-content {
+      position: relative;
+      max-width: 880px;
+      width: 100%;
+      background-color: #0d0d0d;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75);
+    }
+    .etog-lightbox-content img {
+      max-width: 100%;
+      max-height: 76vh;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+      border-radius: 4px;
+    }
+    .etog-lightbox-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #1f1f1f;
+      gap: 12px;
+    }
+    .etog-lightbox-caption {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e5e5;
+      text-align: left;
+    }
+    .etog-lightbox-nav {
+      display: flex;
+      gap: 8px;
+    }
+    .etog-lb-btn {
+      background-color: #1a1a1a;
+      border: 1px solid #3a3a3a;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 7px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .etog-lb-btn:hover { background-color: #2a2a2a; border-color: #666; }
+    .etog-lb-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background-color: #181818;
+      border: 1px solid #3a3a3a;
+      color: #ffffff;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .etog-lb-close:hover { background-color: #2e2e2e; }
   </style>
 </head>
 <body>
 
-<div class="etog-topbar">
-  <a href="https://www.e-tography.com">← Back to e-tography.com</a>
-  <span>e-tography Merch</span>
-</div>
+<!-- BRANDED HEADER WITH LOGO -->
+<header class="etog-topbar">
+  <a href="https://www.e-tography.com" class="etog-brand" title="e-tography">
+    <img src="https://photos.smugmug.com/photos/i-V5vDfdN/0/MBtVnr5wDdPZPqc94Jw7JSsDdSbQDPmftJLSmjvGD/XL/i-V5vDfdN-XL.png" alt="e-tography" class="etog-logo">
+    <span class="etog-brand-tag">Merch Store</span>
+  </a>
+  <a href="https://www.e-tography.com" class="etog-back-link">← Back to e-tography.com</a>
+</header>
 
 <div id="etog-merch">
   <!-- TABS -->
@@ -351,13 +490,19 @@
   <div class="etog-main">
     <div class="etog-gallery-col">
       <div class="etog-viewport">
-        <div class="etog-img-card">
+        <div class="etog-img-card" id="etog-front-card" role="button" tabindex="0" aria-label="Enlarge Front View">
           <img id="etog-front-img" src="" alt="Front View">
-          <span class="etog-img-label">Front View</span>
+          <div class="etog-img-footer">
+            <span class="etog-img-label">Front View</span>
+            <span class="etog-zoom-hint">🔍 Click to zoom</span>
+          </div>
         </div>
-        <div class="etog-img-card">
+        <div class="etog-img-card" id="etog-back-card" role="button" tabindex="0" aria-label="Enlarge Back View">
           <img id="etog-back-img" src="" alt="Back View">
-          <span class="etog-img-label">Back View</span>
+          <div class="etog-img-footer">
+            <span class="etog-img-label">Back View</span>
+            <span class="etog-zoom-hint">🔍 Click to zoom</span>
+          </div>
         </div>
       </div>
     </div>
@@ -418,6 +563,20 @@
     <div id="etog-order-error" class="etog-status-banner error">
       <strong class="title">Checkout Issue</strong>
       <span id="etog-error-msg"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ZOOM LIGHTBOX MODAL -->
+<div id="etog-lightbox" class="etog-lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="etog-lightbox-content">
+    <button type="button" id="etog-lb-close" class="etog-lb-close" aria-label="Close">×</button>
+    <img id="etog-lb-img" src="" alt="Enlarged product view">
+    <div class="etog-lightbox-bar">
+      <span id="etog-lb-caption" class="etog-lightbox-caption"></span>
+      <div class="etog-lightbox-nav">
+        <button type="button" id="etog-lb-toggle" class="etog-lb-btn">Switch to Back View</button>
+      </div>
     </div>
   </div>
 </div>
@@ -491,9 +650,12 @@ let activeStyle = "hoodie";
 let activeColorIndex = 0;
 let cart = [];
 let paypalRendered = false;
+let lightboxSide = "front";
 
 const frontImg = document.getElementById("etog-front-img");
 const backImg = document.getElementById("etog-back-img");
+const frontCard = document.getElementById("etog-front-card");
+const backCard = document.getElementById("etog-back-card");
 const colorLabel = document.getElementById("etog-color-label");
 const swatchGrid = document.getElementById("etog-swatch-grid");
 const pickerTitle = document.getElementById("etog-picker-title");
@@ -510,6 +672,55 @@ const successBanner = document.getElementById("etog-order-success");
 const successMsg = document.getElementById("etog-success-msg");
 const errorBanner = document.getElementById("etog-order-error");
 const errorMsg = document.getElementById("etog-error-msg");
+
+// Lightbox elements
+const lightbox = document.getElementById("etog-lightbox");
+const lbImg = document.getElementById("etog-lb-img");
+const lbCaption = document.getElementById("etog-lb-caption");
+const lbToggle = document.getElementById("etog-lb-toggle");
+const lbClose = document.getElementById("etog-lb-close");
+
+function openLightbox(side) {
+  lightboxSide = side;
+  updateLightbox();
+  lightbox.classList.add("open");
+  lightbox.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function updateLightbox() {
+  const product = CATALOG[activeStyle];
+  const colorObj = product.colors[activeColorIndex] || product.colors[0];
+  const isFront = lightboxSide === "front";
+  lbImg.src = isFront ? colorObj.front : colorObj.back;
+  lbCaption.textContent = `${product.label} — ${colorObj.name} (${isFront ? "Front View" : "Back View"})`;
+  lbToggle.textContent = isFront ? "Switch to Back View" : "Switch to Front View";
+}
+
+function closeLightbox() {
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+frontCard.addEventListener("click", () => openLightbox("front"));
+backCard.addEventListener("click", () => openLightbox("back"));
+frontCard.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLightbox("front"); } });
+backCard.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLightbox("back"); } });
+lbToggle.addEventListener("click", () => {
+  lightboxSide = lightboxSide === "front" ? "back" : "front";
+  updateLightbox();
+});
+lbClose.addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener("keydown", (e) => {
+  if (!lightbox.classList.contains("open")) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    lightboxSide = lightboxSide === "front" ? "back" : "front";
+    updateLightbox();
+  }
+});
 
 function renderPicker() {
   const product = CATALOG[activeStyle];
@@ -562,7 +773,7 @@ function initPayPalButtons() {
 
   if (typeof paypal === "undefined") {
     paypalContainer.innerHTML =
-      '<div style="text-align:center;padding:12px;border:1px dashed #444;border-radius:4px;color:#fca5a5;font-size:12px;">PayPal SDK did not load. Check your PayPal Client ID in <head>.</div>';
+      '<div style="text-align:center;padding:12px;border:1px dashed #ccc;border-radius:4px;color:#b91c1c;font-size:12px;">PayPal SDK did not load. Check your PayPal Client ID in <head>.</div>';
     return;
   }
 
