@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>e-tography Merch Store</title>
-  <!-- REPLACE YOUR_LIVE_PAYPAL_CLIENT_ID BELOW -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAABT6KjkzmvknPNoGNPX0ZQtrfUMhtDAK-NAkkPa1ef_X_6soMCXMAukZ7onzvIY8Mqr5Y0zDaPqIgJss&currency=USD&enable-funding=venmo,card"></script>
   <style>
     * { box-sizing: border-box; }
@@ -418,12 +417,12 @@
 
 <script>
 // ============================================================================
-// 1. PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW
+// GOOGLE APPS SCRIPT WEB APP URL
 // ============================================================================
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfE2p-aqYbSMUoayUxSHbdkkh0r4gKfOva2A9nvxKEoRipf9kAhA1fUIEybyL6ShU/exec";
 
 // ============================================================================
-// 2. ONLY EDIT true / false VALUES BELOW TO MANAGE INVENTORY
+// ONLY EDIT true / false VALUES BELOW TO MANAGE INVENTORY
 // ============================================================================
 const INVENTORY = {
   hoodie: {
@@ -484,6 +483,7 @@ const CATALOG = {
 let activeStyle = "hoodie";
 let activeColorIndex = 0;
 let cart = [];
+let paypalRendered = false;
 
 const frontImg = document.getElementById("etog-front-img");
 const backImg = document.getElementById("etog-back-img");
@@ -550,6 +550,93 @@ function renderPicker() {
   }
 }
 
+function initPayPalButtons() {
+  if (paypalRendered) return;
+
+  if (typeof paypal === "undefined") {
+    paypalContainer.innerHTML =
+      '<div style="text-align:center;padding:12px;border:1px dashed #444;border-radius:4px;color:#fca5a5;font-size:12px;">PayPal SDK did not load. Check your PayPal Client ID in <head>.</div>';
+    return;
+  }
+
+  paypalRendered = true;
+  paypal.Buttons({
+    style: { layout: "vertical", color: "gold", shape: "rect", label: "checkout" },
+
+    createOrder: function(data, actions) {
+      errorBanner.style.display = "none";
+      const subtotal = cart.reduce((sum, i) => sum + i.qty * PRICE, 0);
+      const total = subtotal + FLAT_SHIPPING;
+
+      return actions.order.create({
+        purchase_units: [{
+          description: "e-tography Merch Order",
+          amount: {
+            currency_code: "USD",
+            value: total.toFixed(2),
+            breakdown: {
+              item_total: { currency_code: "USD", value: subtotal.toFixed(2) },
+              shipping:   { currency_code: "USD", value: FLAT_SHIPPING.toFixed(2) }
+            }
+          },
+          items: cart.map(i => ({
+            name: `${i.label} — ${i.color} (${i.size})`,
+            unit_amount: { currency_code: "USD", value: PRICE.toFixed(2) },
+            quantity: String(i.qty)
+          }))
+        }]
+      });
+    },
+
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        const pu = details.purchase_units[0];
+        const addr = pu.shipping && pu.shipping.address ? pu.shipping.address : {};
+        const fullName = (pu.shipping && pu.shipping.name && pu.shipping.name.full_name)
+          || `${details.payer.name.given_name} ${details.payer.name.surname}`;
+        const formattedAddress = [
+          addr.address_line_1,
+          addr.address_line_2,
+          `${addr.admin_area_2 || ""}, ${addr.admin_area_1 || ""} ${addr.postal_code || ""}`.trim(),
+          addr.country_code
+        ].filter(Boolean).join("\n");
+
+        const subtotal = cart.reduce((sum, i) => sum + i.qty * PRICE, 0);
+        const payload = {
+          orderId: details.id,
+          customerName: fullName,
+          customerEmail: details.payer.email_address,
+          shippingAddress: formattedAddress,
+          items: cart.map(i => ({ ...i, price: PRICE })),
+          subtotal: subtotal,
+          shipping: FLAT_SHIPPING,
+          total: subtotal + FLAT_SHIPPING
+        };
+
+        fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        }).catch(function(err) {
+          console.error("Order logging error:", err);
+        });
+
+        cart = [];
+        renderCart();
+        successMsg.innerHTML =
+          `Thank you, <strong>${fullName}</strong>! Your order <strong>#${details.id}</strong> is confirmed. A receipt has been sent to <strong>${details.payer.email_address}</strong>.`;
+        successBanner.style.display = "block";
+      });
+    },
+
+    onError: function(err) {
+      console.error("PayPal error:", err);
+      errorMsg.textContent = "Something went wrong initializing PayPal checkout. Please try again or email e@e-tography.com.";
+      errorBanner.style.display = "block";
+    }
+  }).render("#paypal-button-container");
+}
+
 function renderCart() {
   cartList.innerHTML = "";
 
@@ -563,6 +650,7 @@ function renderCart() {
   cartEmpty.style.display = "none";
   totalsBox.style.display = "flex";
   paypalContainer.style.display = "block";
+  initPayPalButtons();
 
   let subtotal = 0;
 
@@ -645,81 +733,6 @@ addBtn.addEventListener("click", () => {
   qtySelect.value = "1";
   renderCart();
 });
-
-if (typeof paypal !== "undefined") {
-  paypal.Buttons({
-    style: { layout: "vertical", color: "gold", shape: "rect", label: "checkout" },
-
-    createOrder: function(data, actions) {
-      errorBanner.style.display = "none";
-      const subtotal = cart.reduce((sum, i) => sum + i.qty * PRICE, 0);
-      const total = subtotal + FLAT_SHIPPING;
-
-      return actions.order.create({
-        purchase_units: [{
-          description: "e-tography Merch Order",
-          amount: {
-            currency_code: "USD",
-            value: total.toFixed(2),
-            breakdown: {
-              item_total: { currency_code: "USD", value: subtotal.toFixed(2) },
-              shipping:   { currency_code: "USD", value: FLAT_SHIPPING.toFixed(2) }
-            }
-          },
-          items: cart.map(i => ({
-            name: `${i.label} — ${i.color} (${i.size})`,
-            unit_amount: { currency_code: "USD", value: PRICE.toFixed(2) },
-            quantity: String(i.qty)
-          }))
-        }]
-      });
-    },
-
-    onApprove: function(data, actions) {
-      return actions.order.capture().then(function(details) {
-        const pu = details.purchase_units[0];
-        const addr = pu.shipping && pu.shipping.address ? pu.shipping.address : {};
-        const fullName = (pu.shipping && pu.shipping.name && pu.shipping.name.full_name)
-          || `${details.payer.name.given_name} ${details.payer.name.surname}`;
-        const formattedAddress = [
-          addr.address_line_1,
-          addr.address_line_2,
-          `${addr.admin_area_2 || ""}, ${addr.admin_area_1 || ""} ${addr.postal_code || ""}`.trim(),
-          addr.country_code
-        ].filter(Boolean).join("\n");
-
-        const subtotal = cart.reduce((sum, i) => sum + i.qty * PRICE, 0);
-        const payload = {
-          orderId: details.id,
-          customerName: fullName,
-          customerEmail: details.payer.email_address,
-          shippingAddress: formattedAddress,
-          items: cart.map(i => ({ ...i, price: PRICE })),
-          subtotal: subtotal,
-          shipping: FLAT_SHIPPING,
-          total: subtotal + FLAT_SHIPPING
-        };
-
-        fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-
-        cart = [];
-        renderCart();
-        successMsg.innerHTML =
-          `Thank you, <strong>${fullName}</strong>! Your order <strong>#${details.id}</strong> is confirmed. A receipt has been sent to <strong>${details.payer.email_address}</strong>.`;
-        successBanner.style.display = "block";
-      });
-    },
-
-    onError: function() {
-      errorMsg.textContent = "Something went wrong initializing PayPal checkout. Please try again or email e@e-tography.com.";
-      errorBanner.style.display = "block";
-    }
-  }).render("#paypal-button-container");
-}
 
 renderPicker();
 renderCart();
