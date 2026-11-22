@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>e-tography Merch Store</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #050505;
+      color: #e5e5e5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #etog-merch {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #050505;
+      border: 1px solid #1a1a1a;
+      border-radius: 6px;
+    }
+
+    /* Tabs */
+    .etog-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .etog-tab-btn {
+      flex: 1;
+      padding: 13px;
+      background-color: #0d0d0d;
+      border: 1px solid #1f1f1f;
+      color: #777;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 1.4px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+    .etog-tab-btn:hover { background-color: #141414; color: #bbb; }
+    .etog-tab-btn.active {
+      background-color: #181818;
+      color: #ffffff;
+      border-color: #444444;
+    }
+
+    /* Main 2-Column Layout */
+    .etog-main {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+    .etog-gallery-col { flex: 1.5; min-width: 300px; }
+    .etog-config-col { flex: 1.1; min-width: 270px; }
+
+    /* Side-by-Side Front/Back Viewer */
+    .etog-viewport {
+      background-color: #0a0a0a;
+      border: 1px solid #161616;
+      border-radius: 4px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .etog-viewport { grid-template-columns: 1fr; }
+    }
+    .etog-img-card {
+      background-color: #0e0e0e;
+      border: 1px solid #181818;
+      border-radius: 4px;
+      padding: 10px;
+      text-align: center;
+    }
+    .etog-img-card img {
+      width: 100%;
+      max-height: 380px;
+      object-fit: contain;
+      border-radius: 3px;
+      display: block;
+      margin: 0 auto;
+    }
+    .etog-img-label {
+      display: block;
+      margin-top: 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    /* Labels & Swatches */
+    .etog-section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #777;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .etog-section-label strong { color: #fff; }
+
+    .etog-swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .etog-chip {
+      width: 100%;
+      height: 48px;
+      border-radius: 5px;
+      border: 2px solid #222;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      position: relative;
+    }
+    .etog-chip:hover { transform: translateY(-2px); border-color: #666; }
+    .etog-chip.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 0 2px #050505 inset;
+    }
+    .etog-chip.sold-out {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* Item Picker Box */
+    .etog-picker-card {
+      background-color: #0b0b0b;
+      border: 1px solid #1e1e1e;
+      padding: 14px;
+      border-radius: 4px;
+    }
+    .etog-picker-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #bbb;
+      margin-bottom: 10px;
+      letter-spacing: 0.8px;
+    }
+    .etog-picker-header .price { color: #fff; }
+
+    .etog-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .etog-select, .etog-input {
+      flex: 1;
+      padding: 10px;
+      background-color: #050505;
+      border: 1px solid #262626;
+      color: #eee;
+      font-size: 13px;
+      border-radius: 3px;
+    }
+    .etog-input.etog-qty { flex: 0 0 76px; }
+    .etog-select:focus, .etog-input:focus { border-color: #555; outline: none; }
+    .etog-select option:disabled { color: #555; background-color: #111; }
+
+    .etog-add-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #181818;
+      border: 1px solid #444;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .etog-add-btn:hover { background-color: #242424; border-color: #777; }
+    .etog-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Shared Cart Section */
+    .etog-cart-section {
+      border-top: 1px solid #1c1c1c;
+      padding-top: 18px;
+    }
+    .etog-cart-empty {
+      background-color: #0b0b0b;
+      border: 1px dashed #262626;
+      border-radius: 4px;
+      padding: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 14px;
+    }
+    .etog-cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .etog-cart-item {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background-color: #0b0b0b;
+      border: 1px solid #1e1e1e;
+      padding: 10px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .etog-cart-item-info strong { color: #fff; }
+    .etog-cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .etog-cart-qty {
+      width: 60px;
+      padding: 5px 8px;
+      background-color: #050505;
+      border: 1px solid #262626;
+      color: #eee;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .etog-remove-btn {
+      background: transparent;
+      border: 1px solid #444;
+      color: #fca5a5;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 5px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .etog-remove-btn:hover { background-color: #261012; border-color: #7f1d1d; }
+
+    /* Totals & PayPal */
+    .etog-totals {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background-color: #0e0e0e;
+      border: 1px solid #1e1e1e;
+      padding: 12px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .etog-totals span { color: #999; }
+    .etog-totals strong { color: #fff; }
+
+    .etog-paypal-submit {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background-color: #ffc439;
+      color: #111;
+      border: none;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .etog-paypal-submit:hover { background-color: #f2ba36; }
+    .etog-paypal-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .etog-paypal-mark {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #777;
+    }
+    .etog-pp-logo { font-size: 13px; letter-spacing: -0.3px; }
+    .etog-pp-logo em { font-style: italic; font-weight: 800; color: #0070e0; }
+    .etog-pp-logo strong { font-style: italic; font-weight: 800; color: #3b99fc; }
+  </style>
+</head>
+<body>
+
+<div id="etog-merch">
+  <!-- TABS -->
+  <div class="etog-tabs">
+    <button type="button" class="etog-tab-btn active" data-style="hoodie">Hoodie</button>
+    <button type="button" class="etog-tab-btn" data-style="crew">Crew Neck</button>
+  </div>
+
+  <!-- VISUAL BROWSER & ITEM PICKER -->
+  <div class="etog-main">
+    <div class="etog-gallery-col">
+      <div class="etog-viewport">
+        <div class="etog-img-card">
+          <img id="etog-front-img" src="" alt="Front View">
+          <span class="etog-img-label">Front View</span>
+        </div>
+        <div class="etog-img-card">
+          <img id="etog-back-img" src="" alt="Back View">
+          <span class="etog-img-label">Back View</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="etog-config-col">
+      <span class="etog-section-label">Choose Color: <strong id="etog-color-label"></strong></span>
+      <div id="etog-swatch-grid" class="etog-swatch-grid"></div>
+
+      <div class="etog-picker-card">
+        <div class="etog-picker-header">
+          <span id="etog-picker-title">Heavyweight Hoodie</span>
+          <span class="price">$59.00 each</span>
+        </div>
+        <div class="etog-row">
+          <select id="etog-size-select" class="etog-select"></select>
+          <input type="number" id="etog-qty-input" class="etog-input etog-qty" value="1" min="1" max="25">
+        </div>
+        <button type="button" id="etog-add-to-cart" class="etog-add-btn">+ Add to Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED LIVE CART -->
+  <div class="etog-cart-section">
+    <span class="etog-section-label">Your Order (Flat $10.99 Shipping Per Order)</span>
+    <div id="etog-cart-empty" class="etog-cart-empty">
+      Select a garment, color, and size above, then click <strong>+ Add to Order</strong>.
+    </div>
+    <div id="etog-cart-list" class="etog-cart-list"></div>
+
+    <div id="etog-totals" class="etog-totals" style="display: none;">
+      <div><span>Subtotal:</span> <strong id="etog-subtotal">$0.00</strong></div>
+      <div><span>Flat Shipping:</span> <strong>$10.99</strong></div>
+      <div><span>Estimated Total:</span> <strong id="etog-grand-total">$0.00</strong></div>
+    </div>
+
+    <form id="etog-paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+      <input type="hidden" name="cmd" value="_cart">
+      <input type="hidden" name="upload" value="1">
+      <input type="hidden" name="business" value="e@e-tography.com">
+      <input type="hidden" name="currency_code" value="USD">
+      <input type="hidden" name="tax_cart" value="0.00">
+      <input type="hidden" name="shopping_url" value="https://www.e-tography.com/Hoodie-Crew">
+      <input type="hidden" name="return" value="https://www.e-tography.com/Hoodie-Crew">
+      <input type="hidden" name="cancel_return" value="https://www.e-tography.com/Hoodie-Crew">
+      <div id="etog-paypal-fields"></div>
+      <button type="submit" id="etog-checkout-btn" class="etog-paypal-submit" disabled>Checkout with PayPal</button>
+    </form>
+
+    <div class="etog-paypal-mark">
+      <span>Checkout via</span>
+      <span class="etog-pp-logo"><em>Pay</em><strong>Pal</strong></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// ONLY EDIT true / false VALUES BELOW TO MANAGE INVENTORY
+// ============================================================================
+const INVENTORY = {
+  hoodie: {
+    "Jet Black":          { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Deep Steel Blue":    { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Duck Brown":         { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Flint Blue Heather": { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Heathered Charcoal": { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Heathered Steel":    { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "New Navy":           { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Slate Green":        { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Smoky Amethyst":     { S: true,  M: true,  L: true, XL: true, "2XL": true }
+  },
+  crew: {
+    "Jet Black":          { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Deep Steel Blue":    { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Heathered Charcoal": { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Heathered Steel":    { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "New Navy":           { S: true,  M: true,  L: true, XL: true, "2XL": true },
+    "Slate Green":        { S: false, M: false, L: true, XL: true, "2XL": true }
+  }
+};
+
+// ============================================================================
+// PRODUCT CATALOG & MEDIA (No need to edit below this line)
+// ============================================================================
+const PRICE = 59.00;
+const FLAT_SHIPPING = 10.99;
+
+const CATALOG = {
+  hoodie: {
+    label: "Heavyweight Hoodie",
+    paypalName: "e-tography Heavyweight Hoodie",
+    colors: [
+      { name: "Jet Black", hex: "#121212", front: "https://photos.smugmug.com/photos/i-837BZDQ/0/MhWGw5PFqqjV7nVJxzSxdLrMdXZrXCr8BhBvMDcwH/XL/i-837BZDQ-XL.png", back: "https://photos.smugmug.com/photos/i-w5JzzkD/0/MxnvshNQJ7tDZdDzPwtXKNLb5dnKj7zKqGRN3pgQH/XL/i-w5JzzkD-XL.png" },
+      { name: "Deep Steel Blue", hex: "#32424a", front: "https://photos.smugmug.com/photos/i-d6ZgRgp/0/LDKX6fGzfvgzVC8Rd5ZhHh3BvW57PpgbtwPzJzV69/XL/i-d6ZgRgp-XL.png", back: "https://photos.smugmug.com/photos/i-45fjm2J/0/Nf6bSMv5xsBWHLVZDx3BtTDMLVDKr6M3WqjZKsPQj/XL/i-45fjm2J-XL.png" },
+      { name: "Duck Brown", hex: "#6e4e30", front: "https://photos.smugmug.com/photos/i-79WjJxB/0/LMwDFtmLthJCCRWLc48gbtV68g2MGTNh8bLgcMxGk/XL/i-79WjJxB-XL.png", back: "https://photos.smugmug.com/photos/i-Ssc6mPC/0/NTTXQQRG98XnZm67zSpdL7QpdKbdBM8z6Pm72Wgtj/XL/i-Ssc6mPC-XL.png" },
+      { name: "Flint Blue Heather", hex: "#5d6d7e", front: "https://photos.smugmug.com/photos/i-mw8zJgm/0/KXx9zksLFgtpxCFQcSsfHsd6zJ7s2DntHjwqQ4Vwb/XL/i-mw8zJgm-XL.png", back: "https://photos.smugmug.com/photos/i-fxd6KGX/0/MvJkPtjHBnqKjD7VJpRhvGfPvLDBHrsT7BZNQCR6G/XL/i-fxd6KGX-XL.png" },
+      { name: "Heathered Charcoal", hex: "#363636", front: "https://photos.smugmug.com/photos/i-K8vmWgG/0/Lm885CCKnTbKQ8qCc7kQ8vmkTjNBPz5jSDgP4w6jr/XL/i-K8vmWgG-XL.png", back: "https://photos.smugmug.com/photos/i-svcbs6q/0/L4xRQ8pjDwff9pXCJdWMx4Nwsdbj4zNqxVXCf7xZ6/XL/i-svcbs6q-XL.png" },
+      { name: "Heathered Steel", hex: "#9e9e9e", front: "https://photos.smugmug.com/photos/i-fbb8D4D/0/Mc32NKzc5QKczjkbMHWWgJ89Lm7g6WVLHdmsx8wdr/XL/i-fbb8D4D-XL.png", back: "https://photos.smugmug.com/photos/i-b6HKJh8/0/LBpBsmSJp5XNVx77wZJBSCrP4xcNHMj2SkJNcsvTc/XL/i-b6HKJh8-XL.png" },
+      { name: "New Navy", hex: "#1f2a33", front: "https://photos.smugmug.com/photos/i-G7m7MZB/0/MhhrBXDvvQZdKGvP5T5bbJP6fTT34CzGVQWMVnFxd/XL/i-G7m7MZB-XL.png", back: "https://photos.smugmug.com/photos/i-LSqnrrK/0/M5ZxPT2pNtxKjcJJMM4pnRwWfGdfn2Xmg5mFjCWB3/XL/i-LSqnrrK-XL.png" },
+      { name: "Slate Green", hex: "#7b8c7d", front: "https://photos.smugmug.com/photos/i-TWzLXpJ/0/LSbQT3SQZvJW5zZcjjtRb6bcfN6F4pqFnxrfv98D2/XL/i-TWzLXpJ-XL.png", back: "https://photos.smugmug.com/photos/i-KbcjnWJ/0/MjQ575pgnt3NjRBb6GLzf9TWMPPwQcGXshNBhsxSK/XL/i-KbcjnWJ-XL.png" },
+      { name: "Smoky Amethyst", hex: "#766871", front: "https://photos.smugmug.com/photos/i-NWz6JM2/0/MMG8gQ6PL8rJh8n48g9dM7trPcxRtkpr9CGbTzbv8/XL/i-NWz6JM2-XL.png", back: "https://photos.smugmug.com/photos/i-xq6dTpP/0/MqQ6X8HKjZLtxHQz5MxsXhJw2GGhfNWCmV3b7j5fb/XL/i-xq6dTpP-XL.png" }
+    ]
+  },
+  crew: {
+    label: "Crew Neck Sweatshirt",
+    paypalName: "e-tography Crew Neck Sweatshirt",
+    colors: [
+      { name: "Jet Black", hex: "#121212", front: "https://photos.smugmug.com/photos/i-6X5QVfR/0/K6cWsKkjWmfLZ3tW25KJCp9xhhzzdf6VsMJpCTDNN/XL/i-6X5QVfR-XL.png", back: "https://photos.smugmug.com/photos/i-9Q8Zp8Q/0/Kqwz6xqDC9Hj2j5WsrpVXNWm9tFxxjGw2c4r9xSGJ/XL/i-9Q8Zp8Q-XL.png" },
+      { name: "Deep Steel Blue", hex: "#32424a", front: "https://photos.smugmug.com/photos/i-4h3cVmM/0/KkTpw66RDp6rb5jzszprnq6n6z3bHQVgxHWsbjWkC/XL/i-4h3cVmM-XL.png", back: "https://photos.smugmug.com/photos/i-BDVWWm9/0/MPbzCNNT4wv8PbgJzsxkbPWRMCHpZHWHbPsfXwPXc/XL/i-BDVWWm9-XL.png" },
+      { name: "Heathered Charcoal", hex: "#363636", front: "https://photos.smugmug.com/photos/i-HsGWdNF/0/KThXfk9kThvqnNKFxsC2pMTtqmQMvXXkvGN954G3q/XL/i-HsGWdNF-XL.png", back: "https://photos.smugmug.com/photos/i-T7KZ5GF/0/Mbh72hxhWDmxGXNKPv26JT4NKQ8p99Sd384T7Xfg4/XL/i-T7KZ5GF-XL.png" },
+      { name: "Heathered Steel", hex: "#9e9e9e", front: "https://photos.smugmug.com/photos/i-mHXV4dQ/0/Kr9B9QVzdGXfxk4jMNc4pvxvtDSMn8Tp6qWW6QDX4/XL/i-mHXV4dQ-XL.png", back: "https://photos.smugmug.com/photos/i-XPwPBgp/0/NSktXztVHrwrGSwSG7D9J8bN2Qj7xq6Rb64kZMqxw/XL/i-XPwPBgp-XL.png" },
+      { name: "New Navy", hex: "#1f2a33", front: "https://photos.smugmug.com/photos/i-V4DXqkv/0/LDc6NTf9xP3ZjCScW5HqC56QWdbnkQx3fCXtVr6tB/XL/i-V4DXqkv-XL.png", back: "https://photos.smugmug.com/photos/i-csVqBKd/0/LND9FgbhR2Nt69z27qv4gLhDVvF572cCtvBQn7sCq/XL/i-csVqBKd-XL.png" },
+      { name: "Slate Green", hex: "#7b8c7d", front: "https://photos.smugmug.com/photos/i-tML5T9s/0/NQqKGfvj8DGzH6Rz4XmqJXhfBhRnrLS8djvv3CzFG/XL/i-tML5T9s-XL.png", back: "https://photos.smugmug.com/photos/i-xHWhDKB/0/L93BVvZ4MHH9VcjNk32Sm5DC83DNf2DvfGtT7P9QL/XL/i-xHWhDKB-XL.png" }
+    ]
+  }
+};
+
+let activeStyle = "hoodie";
+let activeColorIndex = 0;
+let cart = [];
+
+const frontImg = document.getElementById("etog-front-img");
+const backImg = document.getElementById("etog-back-img");
+const colorLabel = document.getElementById("etog-color-label");
+const swatchGrid = document.getElementById("etog-swatch-grid");
+const pickerTitle = document.getElementById("etog-picker-title");
+const sizeSelect = document.getElementById("etog-size-select");
+const qtyInput = document.getElementById("etog-qty-input");
+const addBtn = document.getElementById("etog-add-to-cart");
+const cartEmpty = document.getElementById("etog-cart-empty");
+const cartList = document.getElementById("etog-cart-list");
+const totalsBox = document.getElementById("etog-totals");
+const subtotalEl = document.getElementById("etog-subtotal");
+const grandTotalEl = document.getElementById("etog-grand-total");
+const checkoutBtn = document.getElementById("etog-checkout-btn");
+const paypalFields = document.getElementById("etog-paypal-fields");
+
+function renderPicker() {
+  const product = CATALOG[activeStyle];
+  const colorObj = product.colors[activeColorIndex] || product.colors[0];
+  const stock = INVENTORY[activeStyle][colorObj.name] || {};
+
+  frontImg.src = colorObj.front;
+  backImg.src = colorObj.back;
+  colorLabel.textContent = colorObj.name;
+  pickerTitle.textContent = product.label;
+
+  swatchGrid.innerHTML = "";
+  product.colors.forEach((c, idx) => {
+    const cStock = INVENTORY[activeStyle][c.name] || {};
+    const anyInStock = Object.values(cStock).some(Boolean);
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "etog-chip" + (idx === activeColorIndex ? " active" : "") + (!anyInStock ? " sold-out" : "");
+    chip.style.backgroundColor = c.hex;
+    chip.title = anyInStock ? c.name : `${c.name} (Sold Out)`;
+    chip.addEventListener("click", () => {
+      activeColorIndex = idx;
+      renderPicker();
+    });
+    swatchGrid.appendChild(chip);
+  });
+
+  sizeSelect.innerHTML = "";
+  let firstAvailable = null;
+  ["S", "M", "L", "XL", "2XL"].forEach((sz) => {
+    const inStock = Boolean(stock[sz]);
+    const opt = document.createElement("option");
+    opt.value = sz;
+    opt.textContent = inStock ? `Size: ${sz}` : `Size: ${sz} (Out of Stock)`;
+    opt.disabled = !inStock;
+    if (inStock && !firstAvailable) firstAvailable = sz;
+    sizeSelect.appendChild(opt);
+  });
+
+  if (firstAvailable) {
+    sizeSelect.value = stock["L"] ? "L" : firstAvailable;
+    addBtn.disabled = false;
+  } else {
+    addBtn.disabled = true;
+  }
+}
+
+function renderCart() {
+  cartList.innerHTML = "";
+  paypalFields.innerHTML = "";
+
+  if (cart.length === 0) {
+    cartEmpty.style.display = "block";
+    totalsBox.style.display = "none";
+    checkoutBtn.disabled = true;
+    return;
+  }
+
+  cartEmpty.style.display = "none";
+  totalsBox.style.display = "flex";
+  checkoutBtn.disabled = false;
+
+  let subtotal = 0;
+
+  cart.forEach((item, idx) => {
+    subtotal += item.qty * PRICE;
+
+    const row = document.createElement("div");
+    row.className = "etog-cart-item";
+    row.innerHTML = `
+      <div class="etog-cart-item-info">
+        <strong>${item.label}</strong> — ${item.color} (Size ${item.size})
+      </div>
+      <div class="etog-cart-item-controls">
+        <input type="number" class="etog-cart-qty" value="${item.qty}" min="1" max="25" data-idx="${idx}">
+        <span>$${(item.qty * PRICE).toFixed(2)}</span>
+        <button type="button" class="etog-remove-btn" data-idx="${idx}">Remove</button>
+      </div>
+    `;
+    cartList.appendChild(row);
+
+    const ppIdx = idx + 1;
+    const fields = {
+      [`item_name_${ppIdx}`]: item.paypalName,
+      [`amount_${ppIdx}`]: PRICE.toFixed(2),
+      [`quantity_${ppIdx}`]: String(item.qty),
+      [`shipping_${ppIdx}`]: ppIdx === 1 ? FLAT_SHIPPING.toFixed(2) : "0.00",
+      [`on0_${ppIdx}`]: "Color",
+      [`os0_${ppIdx}`]: item.color,
+      [`on1_${ppIdx}`]: "Size",
+      [`os1_${ppIdx}`]: item.size
+    };
+    Object.entries(fields).forEach(([name, value]) => {
+      const inp = document.createElement("input");
+      inp.type = "hidden";
+      inp.name = name;
+      inp.value = value;
+      paypalFields.appendChild(inp);
+    });
+  });
+
+  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  grandTotalEl.textContent = `$${(subtotal + FLAT_SHIPPING).toFixed(2)}`;
+
+  cartList.querySelectorAll(".etog-cart-qty").forEach((inp) => {
+    inp.addEventListener("change", (e) => {
+      const idx = parseInt(e.target.dataset.idx, 10);
+      cart[idx].qty = Math.max(1, parseInt(e.target.value, 10) || 1);
+      renderCart();
+    });
+  });
+
+  cartList.querySelectorAll(".etog-remove-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const idx = parseInt(e.target.dataset.idx, 10);
+      cart.splice(idx, 1);
+      renderCart();
+    });
+  });
+}
+
+document.querySelectorAll(".etog-tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".etog-tab-btn").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeStyle = btn.dataset.style;
+    activeColorIndex = 0;
+    renderPicker();
+  });
+});
+
+addBtn.addEventListener("click", () => {
+  const product = CATALOG[activeStyle];
+  const colorObj = product.colors[activeColorIndex];
+  const size = sizeSelect.value;
+  const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
+
+  const existing = cart.find(
+    (item) => item.style === activeStyle && item.color === colorObj.name && item.size === size
+  );
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({
+      style: activeStyle,
+      label: product.label,
+      paypalName: product.paypalName,
+      color: colorObj.name,
+      size,
+      qty
+    });
+  }
+  qtyInput.value = "1";
+  renderCart();
+});
+
+renderPicker();
+renderCart();
+</script>
+</body>
+</html>
