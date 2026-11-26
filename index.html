@@ -750,7 +750,7 @@ function renderPicker() {
 
   sizeSelect.innerHTML = "";
   let firstAvailable = null;
-  ["S", "M", "L", "XL", "2XL"].forEach((sz) => {
+  ["S", "M", "L", "XL", "2XL, 3XL, 4XL"].forEach((sz) => {
     const inStock = Boolean(stock[sz]);
     const opt = document.createElement("option");
     opt.value = sz;
